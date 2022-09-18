@@ -1,4 +1,38 @@
+<?php
+session_start();
 
+try {
+  $_deney = new PDO("mysql:host=localhost;dbname=deney", "root", "");
+} catch (PDOException $e) {
+  print $e->getMessage();
+}
+
+if (isset($_POST["giris"])) {
+  $_SESSION["kullanici_adi"] = $_POST["kullanici_adi"];
+  header("Location:http://localhost");
+}
+
+if (isset($_POST["kaydet"])) {
+  $kullanici_adi = $_SESSION["kullanici_adi"];
+  $baslik = $_POST["baslik"];
+  $icerik = $_POST["icerik"];
+  $listele = $_deney->prepare("INSERT INTO  listeleme SET kullanici_adi=:kullanici_adi, baslik=:baslik, icerik=:icerik");
+  $listele->execute(array(
+    "kullanici_adi" => $kullanici_adi,
+    "baslik" => $baslik,
+    "icerik" => $icerik
+  ));
+  header("Location:http://localhost");
+}
+if (isset($_GET["cikis"])) {
+  if (isset($_SESSION["kullanici_adi"])) {
+    session_destroy();
+    header("Location:http://localhost");
+  } else {
+    header("Location:http://localhost");
+  }
+}
+?>
 <!DOCTYPE html>
 <html lang="tr">
 
